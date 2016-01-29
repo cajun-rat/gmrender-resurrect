@@ -26,6 +26,7 @@
 #include <fcntl.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/uio.h>
 #include <sys/time.h>
@@ -52,7 +53,12 @@ static const char *markup_end_ = "";
 void Log_init(const char *filename) {
 	if (filename == NULL)
 		return;
-	log_fd = open(filename, O_CREAT|O_APPEND|O_WRONLY, 0644);
+
+	if (strcmp("-", filename) == 0) {
+		log_fd = 1;
+	} else {
+		log_fd = open(filename, O_CREAT|O_APPEND|O_WRONLY, 0644);
+	}
 	if (log_fd < 0) {
 		perror("Cannot open logfile");
 		return;
